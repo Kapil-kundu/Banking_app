@@ -1,42 +1,47 @@
 package com.kapil.digitalbank.Banking.App.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name="Account_details")
+@Table(name = "account_details")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class BankAcc {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true,  length = 10)
+    @Column(unique = true, nullable = false, length = 10)
     private String accountNumber;
 
+    @Column(nullable = false)
     private Double balance = 0.0;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AccountType accountType;
 
-    @ManyToOne
+    // Many accounts → one user (OWNING SIDE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "userId",
+            name = "user_id",   // better naming convention
             nullable = false,
-            foreignKey = @ForeignKey(name = "fkAccountUser")
+            foreignKey = @ForeignKey(name = "fk_account_user")
     )
-    private User user;
+    private AppUser appUser;
 
-    @OneToMany
+    // One account → many transactions
+    @OneToMany(
+            mappedBy = "bankAcc",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Transactions> transactions;
 }

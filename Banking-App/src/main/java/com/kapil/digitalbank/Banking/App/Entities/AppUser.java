@@ -1,22 +1,18 @@
 package com.kapil.digitalbank.Banking.App.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Table(name = "users")   // changed from "User" (reserved keyword)
 @Getter
 @Setter
-
-@Entity
-@Table(name = "User")
-public class User {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,11 +29,16 @@ public class User {
     @Column(unique = true, nullable = false)
     private String phone;
 
+    @Column(nullable = false)
     private String password;
 
     private String role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // One user → many bank accounts
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<BankAcc> accounts;
-
 }

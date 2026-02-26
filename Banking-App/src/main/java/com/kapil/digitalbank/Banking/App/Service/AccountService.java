@@ -2,7 +2,7 @@ package com.kapil.digitalbank.Banking.App.Service;
 
 import com.kapil.digitalbank.Banking.App.Entities.AccountType;
 import com.kapil.digitalbank.Banking.App.Entities.BankAcc;
-import com.kapil.digitalbank.Banking.App.Entities.User;
+import com.kapil.digitalbank.Banking.App.Entities.AppUser;
 import com.kapil.digitalbank.Banking.App.Repositories.AccountRepo;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ public class AccountService {
     private UserService userService;
 
     //Opening account of user
-    public void openAccount(User user, AccountType accountType) {
+    public void openAccount(AppUser appUser, AccountType accountType) {
         String account = generateAccNo();
 
         BankAcc bankAcc = new BankAcc();
         bankAcc.setAccountNumber(account);
         bankAcc.setAccountType(accountType);
-        bankAcc.setUser(user);
+        bankAcc.setAppUser(appUser);
     }
 
 

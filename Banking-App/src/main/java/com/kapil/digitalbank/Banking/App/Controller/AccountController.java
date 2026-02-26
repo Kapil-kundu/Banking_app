@@ -1,8 +1,7 @@
 package com.kapil.digitalbank.Banking.App.Controller;
 
 import com.kapil.digitalbank.Banking.App.Entities.AccountType;
-import com.kapil.digitalbank.Banking.App.Entities.BankAcc;
-import com.kapil.digitalbank.Banking.App.Entities.User;
+import com.kapil.digitalbank.Banking.App.Entities.AppUser;
 import com.kapil.digitalbank.Banking.App.Repositories.AccountRepo;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
 import com.kapil.digitalbank.Banking.App.Service.AccountService;
@@ -36,17 +35,17 @@ public class AccountController {
 
         UUID id = UUID.fromString(uuid);
         // checking if user exist or not
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not exists with this id"));
+        AppUser appUser = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not exists with this id"));
 
         // cheking if account already exists with given account type
-        boolean exists = accountRepo.existsByUserIdAndAccountType(id, accountType);
+        boolean exists = accountRepo.existsByAppUser_IdAndAccountType(id, accountType);
 
         if(exists) {
             throw new RuntimeException("Account already exists with this type");
         }
 
         //Now Creating a new Account
-        accountService.openAccount(user, accountType);
+        accountService.openAccount(appUser, accountType);
         return ResponseEntity.ok("Account Created Successfully");
     }
 }

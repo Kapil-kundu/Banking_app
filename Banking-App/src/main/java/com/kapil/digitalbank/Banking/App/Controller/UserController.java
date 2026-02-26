@@ -1,17 +1,13 @@
 package com.kapil.digitalbank.Banking.App.Controller;
 
 
-import com.kapil.digitalbank.Banking.App.Entities.User;
 import com.kapil.digitalbank.Banking.App.Service.AccountService;
 import com.kapil.digitalbank.Banking.App.Service.UserService;
 import com.kapil.digitalbank.Banking.App.dtos.UserDto;
 import com.kapil.digitalbank.Banking.App.dtos.PasswordUpdateDto;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -34,9 +30,10 @@ public class UserController {
     }
 
     // Changing Password of a user
-    @PutMapping
-    public ResponseEntity<?> changePassword(@RequestBody String uuid, @RequestBody PasswordUpdateDto passwordUpdateDto) {
-        userService.updatePassword(uuid, passwordUpdateDto);
+    @PutMapping()
+    public ResponseEntity<?> changePassword(@RequestBody PasswordUpdateDto passwordUpdateDto) {
+
+        userService.updatePassword(passwordUpdateDto);
         return ResponseEntity.ok("Password Changed Successfully");
     }
 
