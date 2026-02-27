@@ -11,6 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,8 +25,6 @@ public class UserService {
 
     private final ModelMapper modelmapper;
 
-
-
     public UserDto createUser(UserDto userDto) {
         userDto.setRole("USER");
         AppUser appUser = modelmapper.map(userDto, AppUser.class);
@@ -36,18 +35,14 @@ public class UserService {
         return modelmapper.map(savedAppUser, UserDto.class);
     }
 
-    public void updatePassword(PasswordUpdateDto passwordUpdateDto) {
-       String uuid = passwordUpdateDto.getUuid();
-       UUID id = UUID.fromString(uuid);
-       AppUser appUser = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-       System.out.println(appUser);
-       String existingPassword = appUser.getPassword();
-       String oldPassword = passwordUpdateDto.getOldPassword();
-       if(!passwordEncoder.matches(existingPassword, oldPassword)) {
-          throw new BadCredentialsException("Old password is incorrect");
+    public boolean updatePassword(PasswordUpdateDto passwordUpdate) {
+       AppUser appUser = userRepo.findByPhone(passwordUpdate.getPhone()).orElseThrow(() -> new RuntimeException("User not found"));
+       if(!passwordEncoder.matches(passwordUpdate.getOldPassword(), appUser.getPassword())) {
+          return false;
        } else {
-           appUser.setPassword(passwordEncoder.encode(passwordUpdateDto.getNewPassword()));
+           appUser.setPassword(passwordEncoder.encode(passwordUpdate.getNewPassword()));
            userRepo.save(appUser);
+           return true;
        }
     }
 

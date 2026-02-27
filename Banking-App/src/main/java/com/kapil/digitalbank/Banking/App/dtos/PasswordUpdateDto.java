@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PasswordUpdateDto {
-    private String uuid;
+    private String phone;
     private String oldPassword;
     private String newPassword;
 }
