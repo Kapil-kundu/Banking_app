@@ -2,6 +2,7 @@ package com.kapil.digitalbank.Banking.App.Controller;
 
 import com.kapil.digitalbank.Banking.App.Entities.AccountType;
 import com.kapil.digitalbank.Banking.App.Entities.AppUser;
+import com.kapil.digitalbank.Banking.App.Entities.BankAcc;
 import com.kapil.digitalbank.Banking.App.Repositories.AccountRepo;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
 import com.kapil.digitalbank.Banking.App.Service.AccountService;
@@ -48,8 +49,25 @@ public class AccountController {
             throw new RuntimeException("Account already exists with this type");
         }
         // Step 3: Create account
-        accountService.openAccount(appUser, accountDto.getAccountType());
-        return ResponseEntity.ok("Account Created Successfully");
+        String accNo = accountService.openAccount(appUser, accountDto.getAccountType());
+        return ResponseEntity.ok("Account Created Successfully and your account number is " + accNo);
     }
+
+    // Check Balance
+    @GetMapping("/checkBalance")
+    public ResponseEntity<?> checkBalance(@RequestBody AccountDto accountDto) {
+
+        // checking if bank account number is valid or not
+        boolean exists = accountRepo.existsByAccountNumber(accountDto.getAccountNumber());
+        if(exists) {
+            return ResponseEntity.ok("Your Balance is " + accountService.checkBalance(accountDto.getAccountNumber()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+
+
 
 }
