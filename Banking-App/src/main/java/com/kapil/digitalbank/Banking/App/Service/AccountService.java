@@ -27,7 +27,7 @@ public class AccountService {
     private UserService userService;
 
     //Opening account of user
-    public void openAccount(AppUser appUser, AccountType accountType) {
+    public String openAccount(AppUser appUser, AccountType accountType) {
         String account = generateAccNo(appUser, accountType);
 
         BankAcc bankAcc = new BankAcc();
@@ -36,6 +36,7 @@ public class AccountService {
         bankAcc.setAppUser(appUser);
         bankAcc.setBalance(0.0); // set initial balance 0
         accountRepo.save(bankAcc);
+        return account;
     }
 
 
@@ -59,5 +60,15 @@ public class AccountService {
         } while(accountRepo.existsByAccountNumber(accountNumber));
 
         return accountNumber;
+    }
+
+    // Checking Balance
+    public Double checkBalance(String accountNumber) {
+        Optional<BankAcc> acc = accountRepo.findByAccountNumber(accountNumber);
+        if(acc.isPresent()) {
+            return acc.get().getBalance();
+        } else {
+            throw new RuntimeException("Account Number does not exist please try again");
+        }
     }
 }
