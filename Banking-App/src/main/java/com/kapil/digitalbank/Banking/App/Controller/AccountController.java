@@ -6,6 +6,7 @@ import com.kapil.digitalbank.Banking.App.Repositories.AccountRepo;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
 import com.kapil.digitalbank.Banking.App.Service.AccountService;
 import com.kapil.digitalbank.Banking.App.Service.UserService;
+import com.kapil.digitalbank.Banking.App.dtos.AccountDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,22 +31,25 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create-account/{uuid}")
-    public ResponseEntity<?> createAccount(@PathVariable String uuid, @RequestParam AccountType accountType) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createAccount(@RequestBody AccountDto accountDto) {
 
-        UUID id = UUID.fromString(uuid);
-        // checking if user exist or not
-        AppUser appUser = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not exists with this id"));
+        // Step 1: Check if user exists
+        AppUser appUser = userRepo.findByEmail(accountDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not exists with this id"));
 
-        // cheking if account already exists with given account type
-        boolean exists = accountRepo.existsByAppUser_IdAndAccountType(id, accountType);
+        // Step 2: Check if account already exists
+        boolean exists = accountRepo.existsByAppUser_EmailAndAccountType(
+                accountDto.getEmail(),
+                accountDto.getAccountType()
+        );
 
-        if(exists) {
+        if (exists) {
             throw new RuntimeException("Account already exists with this type");
         }
-
-        //Now Creating a new Account
-        accountService.openAccount(appUser, accountType);
+        // Step 3: Create account
+        accountService.openAccount(appUser, accountDto.getAccountType());
         return ResponseEntity.ok("Account Created Successfully");
     }
+
 }

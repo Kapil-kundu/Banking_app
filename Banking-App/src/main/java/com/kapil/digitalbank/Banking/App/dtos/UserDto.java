@@ -2,9 +2,11 @@ package com.kapil.digitalbank.Banking.App.dtos;
 
 
 import com.kapil.digitalbank.Banking.App.Entities.BankAcc;
+import com.kapil.digitalbank.Banking.App.Entities.Transactions;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +15,7 @@ import java.util.List;
 @Builder
 public class UserDto {
 
-    private String id;
+    private UUID id;
 
     private String firstName;
 
@@ -29,5 +31,7 @@ public class UserDto {
 
     private List<BankAcc> accounts;
 
-    private PasswordUpdateDto passwordUpdateDto;
+    private PasswordUpdateDto userUpdationDto;
+
+
 }

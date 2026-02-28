@@ -5,6 +5,7 @@ import com.kapil.digitalbank.Banking.App.Entities.BankAcc;
 import com.kapil.digitalbank.Banking.App.Entities.AppUser;
 import com.kapil.digitalbank.Banking.App.Repositories.AccountRepo;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Random;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class AccountService {
 
     @Autowired
@@ -26,12 +28,14 @@ public class AccountService {
 
     //Opening account of user
     public void openAccount(AppUser appUser, AccountType accountType) {
-        String account = generateAccNo();
+        String account = generateAccNo(appUser, accountType);
 
         BankAcc bankAcc = new BankAcc();
         bankAcc.setAccountNumber(account);
         bankAcc.setAccountType(accountType);
         bankAcc.setAppUser(appUser);
+        bankAcc.setBalance(0.0); // set initial balance 0
+        accountRepo.save(bankAcc);
     }
 
 
@@ -43,7 +47,7 @@ public class AccountService {
 
 
     //Generating unique account number
-    private String generateAccNo() {
+    public String generateAccNo(AppUser appUser, AccountType accountType) {
         Random random = new Random();
         String accountNumber;
 

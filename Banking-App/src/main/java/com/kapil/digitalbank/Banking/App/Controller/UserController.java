@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -32,15 +30,17 @@ public class UserController {
     }
 
     // Changing Password of a user
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<?> changePassword(@RequestBody PasswordUpdateDto passwordUpdate) {
-        if(userService.updatePassword( passwordUpdate)) {
+        if(userService.updatePassword(passwordUpdate)) {
             return ResponseEntity.ok("Password changed Successfully");
         } else {
-            return ResponseEntity.ok("Old Password is Incorrect");
+            return ResponseEntity.badRequest().body("Old Password is incorrect");
         }
-
     }
+
+    // Chaging Phone Number of a user
+
 
 
 

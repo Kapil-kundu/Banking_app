@@ -7,12 +7,8 @@ import com.kapil.digitalbank.Banking.App.dtos.UserDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +32,7 @@ public class UserService {
     }
 
     public boolean updatePassword(PasswordUpdateDto passwordUpdate) {
-       AppUser appUser = userRepo.findByPhone(passwordUpdate.getPhone()).orElseThrow(() -> new RuntimeException("User not found"));
+       AppUser appUser = userRepo.findByEmail(passwordUpdate.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
        if(!passwordEncoder.matches(passwordUpdate.getOldPassword(), appUser.getPassword())) {
           return false;
        } else {
@@ -45,5 +41,7 @@ public class UserService {
            return true;
        }
     }
+
+
 
 }

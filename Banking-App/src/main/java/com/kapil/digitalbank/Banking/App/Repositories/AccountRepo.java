@@ -11,6 +11,6 @@ public interface AccountRepo extends JpaRepository<BankAcc, UUID> {
 
     boolean existsByAccountNumber(String accountNumber);
 
-    boolean existsByAppUser_IdAndAccountType(UUID id, AccountType type);
+    boolean existsByAppUser_EmailAndAccountType(String email, AccountType type);
     Optional<BankAcc> getAccountById(UUID id);
 }
