@@ -2,6 +2,7 @@ package com.kapil.digitalbank.Banking.App.Service;
 
 import com.kapil.digitalbank.Banking.App.Entities.AppUser;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
+import com.kapil.digitalbank.Banking.App.dtos.ChangeEmailDto;
 import com.kapil.digitalbank.Banking.App.dtos.PasswordUpdateDto;
 import com.kapil.digitalbank.Banking.App.dtos.UserDto;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +44,30 @@ public class UserService {
            return true;
        }
     }
+
+    public String changeEmail(ChangeEmailDto changeEmailDto) {
+        boolean exist = userRepo.existsByEmail(changeEmailDto.getOldEmail());
+        if(exist) {
+            boolean newExist = userRepo.existsByEmail(changeEmailDto.getNewEmail());
+            AppUser user = userRepo.findByEmail(changeEmailDto.getOldEmail())
+                    .orElseThrow(() -> new RuntimeException("0Given Email does not exist"));
+            if(newExist) {
+                return "0New email already exists";
+            } else {
+                if(passwordEncoder.matches(changeEmailDto.getPassword() ,user.getPassword())){
+                    user.setEmail(changeEmailDto.getNewEmail());
+                    userRepo.save(user);
+                    return "1Email changed Successfully";
+                } else {
+                    return "0Email or password is incorrect";
+                }
+            }
+        } else {
+            return "1Given email did not exist";
+        }
+    }
+
+
 
 
 
