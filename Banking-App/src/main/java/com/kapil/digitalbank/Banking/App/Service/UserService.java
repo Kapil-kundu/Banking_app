@@ -3,6 +3,7 @@ package com.kapil.digitalbank.Banking.App.Service;
 import com.kapil.digitalbank.Banking.App.Entities.AppUser;
 import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
 import com.kapil.digitalbank.Banking.App.dtos.ChangeEmailDto;
+import com.kapil.digitalbank.Banking.App.dtos.ChangePhoneDto;
 import com.kapil.digitalbank.Banking.App.dtos.PasswordUpdateDto;
 import com.kapil.digitalbank.Banking.App.dtos.UserDto;
 import lombok.AllArgsConstructor;
@@ -63,7 +64,28 @@ public class UserService {
                 }
             }
         } else {
-            return "1Given email did not exist";
+            return "0Given email did not exist";
+        }
+    }
+
+    public String changePhone(ChangePhoneDto changePhoneDto) {
+        // check if user exist or not
+        boolean exist = userRepo.existsByEmail(changePhoneDto.getEmail());
+        if(exist) {
+            AppUser user = userRepo.findByEmail(changePhoneDto.getEmail()).orElseThrow(() -> new RuntimeException("0 Email does not exist"));
+            if(passwordEncoder.matches(changePhoneDto.getPassword(), user.getPassword())) {
+                if(changePhoneDto.getNewPhone().equals(changePhoneDto.getOldPhone())) {
+                    return "0New Number must be different from your old number";
+                } else {
+                    user.setPhone(changePhoneDto.getNewPhone());
+                    userRepo.save(user);
+                    return "1Phone Changed Successfully";
+                }
+            } else {
+                return "0Email or password is incorrect";
+            }
+        } else{
+            return "0Email does not exist";
         }
     }
 

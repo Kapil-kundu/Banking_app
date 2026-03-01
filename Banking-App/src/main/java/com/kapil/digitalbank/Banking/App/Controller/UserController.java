@@ -6,6 +6,7 @@ import com.kapil.digitalbank.Banking.App.Repositories.UserRepo;
 import com.kapil.digitalbank.Banking.App.Service.AccountService;
 import com.kapil.digitalbank.Banking.App.Service.UserService;
 import com.kapil.digitalbank.Banking.App.dtos.ChangeEmailDto;
+import com.kapil.digitalbank.Banking.App.dtos.ChangePhoneDto;
 import com.kapil.digitalbank.Banking.App.dtos.UserDto;
 import com.kapil.digitalbank.Banking.App.dtos.PasswordUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,23 @@ public class UserController {
             return ResponseEntity.ok(sb);
         }
     }
+
+    //Changing Phone number of a User
+    @GetMapping("/change-phone")
+    public ResponseEntity<?> changePhone(@RequestBody ChangePhoneDto changePhoneDto) {
+        String msg = userService.changePhone(changePhoneDto);
+        char check = msg.charAt(0);
+        StringBuilder sb = new StringBuilder(msg);
+        if(check == '0') {
+            sb.deleteCharAt(0);
+            return ResponseEntity.badRequest().body(sb);
+        } else {
+            sb.deleteCharAt(0);
+            return ResponseEntity.ok(sb);
+        }
+
+    }
+
     
 
 
